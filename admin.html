@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management</title>
+    <link rel="stylesheet" href="/track/static/admin.css">
+    <link rel="icon" type="image/x-icon" href="/track/static/Yotuh_y.jpg">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>User Management</h2>
+            <button id="logoutBtn" class="logoutButtonStyle" onclick="logout()">Logout</button>
+        </div>
+        <form id="userForm">
+            <input type="text" id="username" placeholder="Username" required>
+
+            <div class="password-container">
+                <input type="password" id="password" placeholder="Password" required>
+                <img src="/track/static/eyeclosed.svg" id="togglePassword" class="toggle-password" onclick="togglePasswordfun()" alt="Toggle Password">
+            </div>
+
+            <!-- IMEI and Vehicle No Fields -->
+            <div id="imeiVehicleContainer">
+                <div class="imei-vehicle-row">
+                    <input type="text" id="IMEI1" name="IMEI1" placeholder="IMEI">
+                    <input type="text" id="VehicleNo1" name="VehicleNo1" placeholder="Vehicle No">
+                    <button type="button" class="add-btn" onclick="addIMEIVehicleRow()">➕</button>
+                </div>
+            </div>
+
+            <button type="submit">Add User</button>
+        </form>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Password</th>
+                    <th>IMEI & Vehicle No</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="userTableBody">
+                <!-- Data will be populated dynamically -->
+            </tbody>
+        </table>
+    </div>
+
+    <script src="/track/static/admin.js"></script>
+</body>
+</html>

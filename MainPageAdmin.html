@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Page</title>
+    <link rel="stylesheet" href="/track/static/MainPage.css">
+    <link rel="icon" type="image/x-icon" href="/track/static/Yotuh_y.jpg">
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script> <!-- Load ApexCharts -->
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <img src="/track/static/YoTuh.png" alt="Logo" style="width: 90px; height: auto; margin-top:30px; margin-bottom:30px;">
+
+        <button class="nav-button active" id="dashboard-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="256" height="256" viewBox="0 0 256 256" xml:space="preserve">
+
+            <defs>
+            </defs>
+            <g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;" transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)" >
+                <path d="M 34.307 42.764 H 8.457 C 3.794 42.764 0 38.97 0 34.307 V 8.457 C 0 3.794 3.794 0 8.457 0 h 25.85 c 4.663 0 8.457 3.794 8.457 8.457 v 25.85 C 42.764 38.97 38.97 42.764 34.307 42.764 z M 8.457 6 C 7.102 6 6 7.102 6 8.457 v 25.85 c 0 1.355 1.102 2.457 2.457 2.457 h 25.85 c 1.355 0 2.457 -1.102 2.457 -2.457 V 8.457 C 36.764 7.102 35.662 6 34.307 6 H 8.457 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+                <path d="M 81.543 42.764 h -25.85 c -4.663 0 -8.457 -3.794 -8.457 -8.457 V 8.457 C 47.236 3.794 51.03 0 55.693 0 h 25.85 C 86.206 0 90 3.794 90 8.457 v 25.85 C 90 38.97 86.206 42.764 81.543 42.764 z M 55.693 6 c -1.354 0 -2.457 1.102 -2.457 2.457 v 25.85 c 0 1.355 1.103 2.457 2.457 2.457 h 25.85 c 1.354 0 2.457 -1.102 2.457 -2.457 V 8.457 C 84 7.102 82.897 6 81.543 6 H 55.693 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+                <path d="M 34.307 90 H 8.457 C 3.794 90 0 86.206 0 81.543 v -25.85 c 0 -4.663 3.794 -8.457 8.457 -8.457 h 25.85 c 4.663 0 8.457 3.794 8.457 8.457 v 25.85 C 42.764 86.206 38.97 90 34.307 90 z M 8.457 53.236 C 7.102 53.236 6 54.339 6 55.693 v 25.85 C 6 82.897 7.102 84 8.457 84 h 25.85 c 1.355 0 2.457 -1.103 2.457 -2.457 v -25.85 c 0 -1.354 -1.102 -2.457 -2.457 -2.457 H 8.457 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+                <path d="M 81.543 90 h -25.85 c -4.663 0 -8.457 -3.794 -8.457 -8.457 v -25.85 c 0 -4.663 3.794 -8.457 8.457 -8.457 h 25.85 c 4.663 0 8.457 3.794 8.457 8.457 v 25.85 C 90 86.206 86.206 90 81.543 90 z M 55.693 53.236 c -1.354 0 -2.457 1.103 -2.457 2.457 v 25.85 c 0 1.354 1.103 2.457 2.457 2.457 h 25.85 C 82.897 84 84 82.897 84 81.543 v -25.85 c 0 -1.354 -1.103 -2.457 -2.457 -2.457 H 55.693 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+            </g>
+            </svg>
+            Dashboard
+        </button>
+
+        <button class="nav-button" id="overview-btn">
+            <svg width="26" height="27" viewBox="0 0 26 27" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0.154419 15.4575C0.154419 14.6921 0.774901 14.0716 1.5403 14.0716C2.30571 14.0716 2.92619 14.6921 2.92619 15.4575V24.7792C2.92619 25.5447 2.30571 26.1651 1.5403 26.1651C0.774901 26.1651 0.154419 25.5447 0.154419 24.7792V15.4575ZM22.3286 10.0825C22.3286 9.31713 22.9491 8.69665 23.7145 8.69665C24.4799 8.69665 25.1004 9.31714 25.1004 10.0825V24.7793C25.1004 25.5447 24.4799 26.1651 23.7145 26.1651C22.9491 26.1651 22.3286 25.5447 22.3286 24.7792V10.0825ZM11.2415 2.02016C11.2415 1.25476 11.862 0.634277 12.6274 0.634277C13.3928 0.634277 14.0133 1.25476 14.0133 2.02016V24.7793C14.0133 25.5447 13.3928 26.1651 12.6274 26.1651C11.862 26.1651 11.2415 25.5447 11.2415 24.7792V2.02016Z" fill="black"/>
+            </svg>
+            Overview
+        </button>
+        <button class="nav-button" id="analysis-btn">
+            <?xml version="1.0" encoding="utf-8"?><!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+            <svg fill="black" width="26" height="27" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4,23a1,1,0,0,1-1-1V19a1,1,0,0,1,2,0v3A1,1,0,0,1,4,23Zm9-1V15a1,1,0,0,0-2,0v7a1,1,0,0,0,2,0Zm7-11a1,1,0,0,0-1,1V22a1,1,0,0,0,2,0V12A1,1,0,0,0,20,11Zm.382-9.923A.991.991,0,0,0,20,1H16a1,1,0,0,0,0,2h1.586L12,8.586,8.707,5.293a1,1,0,0,0-1.414,0l-4,4a1,1,0,0,0,1.414,1.414L8,7.414l3.293,3.293a1,1,0,0,0,1.414,0L19,4.414V6a1,1,0,0,0,2,0V2a1,1,0,0,0-.618-.923Z"/></svg>
+            Analysis
+        </button>
+
+        <button class="nav-button" id="contactus-btn">
+            <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+
+            <svg
+               width="28px"
+               height="28px"
+               viewBox="0 0 24 24"
+               fill="none"
+               version="1.1"
+               id="svg3">
+              <defs
+                 id="defs3" />
+              <path
+                 d="M13 8C13 7.44772 12.5523 7 12 7C11.4477 7 11 7.44772 11 8C11 8.55228 11.4477 9 12 9C12.5523 9 13 8.55228 13 8Z"
+                 fill="#1C274C"
+                 id="path1"
+                 style="fill:#000000;fill-opacity:1" />
+              <path
+                 d="M12 17.75C12.4142 17.75 12.75 17.4142 12.75 17V11C12.75 10.5858 12.4142 10.25 12 10.25C11.5858 10.25 11.25 10.5858 11.25 11V17C11.25 17.4142 11.5858 17.75 12 17.75Z"
+                 fill="#1C274C"
+                 id="path2"
+                 style="fill:#000000;fill-opacity:1" />
+              <path
+                 fill-rule="evenodd"
+                 clip-rule="evenodd"
+                 d="M12.0574 1.25H11.9426C9.63424 1.24999 7.82519 1.24998 6.41371 1.43975C4.96897 1.63399 3.82895 2.03933 2.93414 2.93414C2.03933 3.82895 1.63399 4.96897 1.43975 6.41371C1.24998 7.82519 1.24999 9.63422 1.25 11.9426V12.0574C1.24999 14.3658 1.24998 16.1748 1.43975 17.5863C1.63399 19.031 2.03933 20.1711 2.93414 21.0659C3.82895 21.9607 4.96897 22.366 6.41371 22.5603C7.82519 22.75 9.63423 22.75 11.9426 22.75H12.0574C14.3658 22.75 16.1748 22.75 17.5863 22.5603C19.031 22.366 20.1711 21.9607 21.0659 21.0659C21.9607 20.1711 22.366 19.031 22.5603 17.5863C22.75 16.1748 22.75 14.3658 22.75 12.0574V11.9426C22.75 9.63423 22.75 7.82519 22.5603 6.41371C22.366 4.96897 21.9607 3.82895 21.0659 2.93414C20.1711 2.03933 19.031 1.63399 17.5863 1.43975C16.1748 1.24998 14.3658 1.24999 12.0574 1.25ZM3.9948 3.9948C4.56445 3.42514 5.33517 3.09825 6.61358 2.92637C7.91356 2.75159 9.62177 2.75 12 2.75C14.3782 2.75 16.0864 2.75159 17.3864 2.92637C18.6648 3.09825 19.4355 3.42514 20.0052 3.9948C20.5749 4.56445 20.9018 5.33517 21.0736 6.61358C21.2484 7.91356 21.25 9.62177 21.25 12C21.25 14.3782 21.2484 16.0864 21.0736 17.3864C20.9018 18.6648 20.5749 19.4355 20.0052 20.0052C19.4355 20.5749 18.6648 20.9018 17.3864 21.0736C16.0864 21.2484 14.3782 21.25 12 21.25C9.62177 21.25 7.91356 21.2484 6.61358 21.0736C5.33517 20.9018 4.56445 20.5749 3.9948 20.0052C3.42514 19.4355 3.09825 18.6648 2.92637 17.3864C2.75159 16.0864 2.75 14.3782 2.75 12C2.75 9.62177 2.75159 7.91356 2.92637 6.61358C3.09825 5.33517 3.42514 4.56445 3.9948 3.9948Z"
+                 fill="#1C274C"
+                 id="path3"
+                 style="fill:#000000;fill-opacity:1" />
+            </svg>
+
+            Contact Us
+        </button>
+    </div>
+    <!-- Header -->
+    <div class="header" id="header-title">
+        Dashboard
+        <div class="profile-container">
+            <img src="/track/static/profile.svg" alt="Profile" class="profile-icon">
+            <span id="username"></span>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/olamaps-web-sdk@latest/dist/olamaps-web-sdk.umd.js"></script>
+
+    <!-- Main Content -->
+
+    <div class="main-content" id="dashboard-content">
+        <!-- Left Column: Map -->
+        <div class="column">
+            <div id="map"></div>
+        </div>
+
+        <!-- Right Column: Input Form -->
+        <div class="right-column">
+            <!-- Search Bar -->
+            <!-- Input Containers (Scrollable) -->
+            <div class="scrollable-container">
+                <!-- Default Input Container -->
+            </div>
+        </div>
+    </div>
+    <div id="overview-content" class="main-content">
+    <!-- Left Column: Map -->
+        <div class="column">
+            <div id="map2"></div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="input-container" style="width : 38%; height : 30%">
+            <div class="right-column">
+            <!-- Dropdown -->
+            <label for="dropdown">Select an Option:</label>
+            <select id="dropdown" class="dropdown" style="width : 283%;">
+
+            </select>
+
+            <!-- Date Pickers in One Row -->
+            <div class="date-container">
+                <!-- Start Date and Start Time in the Same Row -->
+                <div class="date-time-row">
+                    <label for="start-date">Start Date:</label>
+                    <input type="date" id="start-date">
+
+                    <label for="start-time">Start Time:</label>
+                    <input type="time" id="start-time">
+                </div>
+
+                <!-- End Date and End Time in the Same Row -->
+                <div class="date-time-row">
+                    <label for="end-date">End Date:</label>
+                    <input type="date" id="end-date">
+
+                    <label for="end-time">End Time:</label>
+                    <input type="time" id="end-time">
+                </div>
+            </div>
+
+
+
+
+            <button id="submitBtn" class="submitButton">
+                Submit
+        </button>
+        </div>
+        </div>
+    </div>
+
+    <div id="analysis-content">
+        <div class="containerWork">
+            <div class="rowWork">
+                <div class="input-wrapper">
+                    <div class="input-container" style="width : 54%; height : 30%">
+                        <label for="dropdownAnalysis" style="font-size: 16px; font-weight: bold; display: block; margin-bottom: 5px;">
+                            Select an Option:
+                        </label>
+                        <select id="dropdownAnalysis" class="dropdown" style="width : 100%; margin-top:20px;">
+                        </select>
+                        <!-- Date Pickers in One Row -->
+                        <div class="date-containerAnalysis">
+                                <div class="date-time-row">
+                                     <label for="start-dateAnalysis">Start Date:</label>
+                                     <input type="date" id="start-dateAnalysis">
+
+                                    <label for="start-timeAnalysis">Start Time:</label>
+                                    <input type="time" id="start-timeAnalysis">
+                                </div>
+                                <div class="date-time-row">
+                                     <label for="end-dateAnalysis">End Date:</label>
+                                     <input type="date" id="end-dateAnalysis">
+
+                                    <label for="end-timeAnalysis">End Time:</label>
+                                    <input type="time" id="end-timeAnalysis">
+                                </div>
+
+                        </div>
+                </div>
+                <div class="input-container" style="width : 38%; height: 200px;">
+                        <div class="dropdown-container">
+                            <!-- Input Box for Selected Values -->
+                            <label for="selectedValues" style="font-size: 16px; font-weight: bold; display: flex; margin-bottom: 5px; text-align: top">
+                            Parameters to load:
+                            </label>
+                            <input type="text" id="selectedValues" placeholder="Selected items..." readonly>
+
+                            <!-- Dropdown Button -->
+                            <button id="dropdownBtn">Select Items ⬇</button>
+
+                            <!-- Dropdown Content -->
+                            <div id="dropdownContent" class="dropdown-content">
+                                <label><input type="checkbox" value="Altitude"> Altitude</label>
+                                <label><input type="checkbox" value="Ignition status"> Ignition status</label>
+                                <label><input type="checkbox" value="Movement"> Movement</label>
+                                <label><input type="checkbox" value="Gsm Signal"> Gsm Signal</label>
+                                <label><input type="checkbox" value="Sleep mode"> Sleep mode</label>
+                                <label><input type="checkbox" value="Gnss status"> Gnss status</label>
+                                <label><input type="checkbox" value="Battery level"> Battery level</label>
+                                <label><input type="checkbox" value="GNSS PDOP"> GNSS PDOP</label>
+                                <label><input type="checkbox" value="GNSS HDOP"> GNSS HDOP</label>
+                                <label><input type="checkbox" value="Vehicle Speed"> Vehicle Speed</label>
+                                <label><input type="checkbox" value="Battery Current"> Battery Current</label>
+                                <label><input type="checkbox" value="Temp sensor 1"> Temp sensor 1</label>
+                                <label><input type="checkbox" value="Temp sensor 2"> Temp sensor 2</label>
+                                <label><input type="checkbox" value="Temp sensor 3"> Temp sensor 3</label>
+                                <label><input type="checkbox" value="Temp Sensor 4"> Temp Sensor 4</label>
+                                <label><input type="checkbox" value="Temp Sensor 5"> Temp Sensor 5</label>
+                                <label><input type="checkbox" value="Temp Sensor 6"> Temp Sensor 6</label>
+                                <label><input type="checkbox" value="Temp Sensor 7"> Temp Sensor 7</label>
+                                <label><input type="checkbox" value="Temp Sensor 8"> Temp Sensor 8</label>
+                                <label><input type="checkbox" value="Box Temperature"> Box Temperature</label>
+                                <label><input type="checkbox" value="Discharge side pressure"> Discharge side pressure</label>
+                                <label><input type="checkbox" value="Suction side pressure"> Suction side pressure</label>
+                                <label><input type="checkbox" value="Compression Current"> Compression Current</label>
+                                <label><input type="checkbox" value="Compressor rpm"> Compressor rpm</label>
+                                <label><input type="checkbox" value="Set point"> Set point</label>
+                                <label><input type="checkbox" value="TTD/TTC"> TTD/TTC</label>
+                                <label><input type="checkbox" value="Hysteresis"> Hysteresis</label>
+                                <label><input type="checkbox" value="Driver switch button"> Driver switch button</label>
+                                <label><input type="checkbox" value="Cooling state"> Cooling state</label>
+                                <label><input type="checkbox" value="Defrost state"> Defrost state</label>
+                                <label><input type="checkbox" value="Door state"> Door state</label>
+                                <label><input type="checkbox" value="Standby switch"> Standby switch</label>
+                                <label><input type="checkbox" value="Charging status"> Charging status</label>
+                                <label><input type="checkbox" value="Charging interlock"> Charging interlock</label>
+                                <label><input type="checkbox" value="Error state"> Error state</label>
+                                <label><input type="checkbox" value="Warning state"> Warning state</label>
+                                <label><input type="checkbox" value="Soc"> Soc</label>
+                                <label><input type="checkbox" value="Voltage"> Voltage</label>
+                                <label><input type="checkbox" value="Current"> Current</label>
+                                <label><input type="checkbox" value="Soh"> Soh</label>
+                                <label><input type="checkbox" value="Max cell voltage"> Max cell voltage</label>
+                                <label><input type="checkbox" value="Min cell voltage"> Min cell voltage</label>
+                                <label><input type="checkbox" value="Max cell temperature"> Max cell temperature</label>
+                                <label><input type="checkbox" value="Min cell temperature"> Min cell temperature</label>
+                                <label><input type="checkbox" value="Charge / Discharge cycles"> Charge / Discharge cycles</label>
+                            </div>
+                        </div>
+                        <div class="container">
+                            <button id="submitBtnAnalysis" class="submitButton" style="margin-left : 105px; width : 40%;">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          </div>
+
+          <div class="containerWork">
+            <div class="chart-container">
+                <h2 style="text-align: center;">Data Analysis</h2>
+                <div id="chart"></div>
+            </div>
+          </div>
+    </div>
+    <div class="main-content" id="contactus-content">
+        <!-- Left Column: Map -->
+        <div class="contactuscontainer">
+            <img src="/track/static/YoTuh.png" alt="Logo" style="width: 150px; height: 80px; margin-top:30px; margin-bottom:30px;">
+        <!-- Contact Details -->
+            <div class="contact-details">
+                <h2>Contact</h2>
+                <br>
+                <p>+91 8826691930</p>
+                <div style="height: 10px"></div>
+                <p>+91 8610188089</p>
+                <div style="height: 10px"></div>
+                <p>+91 8903532781</p>
+                <br>
+                <h2>Address</h2>
+                <br>
+                <p>39C, 2nd Main Road,</p>
+                <p>Ambattur Industrial Estate,</p>
+                <p>Chennai - 600058</p>
+            </div>
+        </div>
+    </div>
+    <script src="/track/static/MainPageAdmin.js"></script>
+</body>
+</html>
+
+
+
+

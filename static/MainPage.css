@@ -1,0 +1,562 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* Style Dropdown */
+.right-column label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.dropdown {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.dropdown-container {
+    position: relative;
+    width: 250px;
+}
+
+
+
+
+
+.chart-container {
+    width: 80%;
+    margin-left: 8%;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
+    margin-top: 20px;
+}
+
+#chart {
+    width: 100%;
+    height: 350px;
+}
+.date-container {
+    display: flex;
+    flex-direction: column; /* Each date-time pair in a separate row */
+    gap: 15px; /* Space between rows */
+    width: 100%; /* Full width */
+}
+
+.date-time-row {
+    display: flex;
+    flex-direction: row;
+    gap: 10%; /* Space between elements */
+    width: 100%;
+    align-items: center;
+}
+
+.date-container label {
+    font-size: 14px;
+    font-weight: bold;
+    width: 20%; /* Consistent label width */
+    text-align: center;
+}
+
+.date-container input[type="date"],
+.date-container input[type="time"] {
+    width: 110%; /* Width for date and time pickers */
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    text-align: center;
+}
+
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+/* Sidebar */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 14%;
+    height: 100vh;
+    background-color: #fff; /* Sidebar white */
+    color: black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 9999;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+.nav-button {
+    width: 80%;
+    padding: 10px;
+    margin: 5px 0;
+    text-align: left;
+    border-radius: 8px;
+    cursor: pointer;
+    background-color: transparent;
+    color: black;
+    border: none;
+    font-size: 16px;
+    transition: 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.nav-button svg {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    fill: black;  /* Explicitly set the initial color */
+}
+
+.nav-button.active {
+    background-color: #3498db;
+    color: white; /* Only changes text color */
+}
+
+.nav-button.active svg {
+    fill: black !important; /* Keeps the SVG black even when active */
+}
+
+
+.submitButton{
+    width: 100%;
+    margin-top: 15px;
+    padding: 10px;
+    margin-left : 90%;
+    background-color: #3498db;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.3);
+    transition: 0.3s;
+}
+
+.nav-button.active svg {
+    fill: white;
+}
+
+/* Header */
+/* Header */
+.header {
+    position: fixed;
+    top: 0;
+    left: 14%;
+    width: 86%;
+    height: 50px;
+    background-color: #fff; /* Header white */
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Push items to both ends */
+    padding: 0 20px;
+    font-size: 18px;
+    font-weight: bold;
+    z-index: 9999;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Profile container */
+.profile-container {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between icon and text */
+}
+
+/* Profile icon */
+.profile-icon {
+    width: 30px; /* Adjust size as needed */
+    height: 30px;
+    border-radius: 50%;
+}
+
+#analysis-content {
+  display: flex;
+  margin-top:30px;
+  margin-left: 4%;
+  flex-direction: column; /* Stack children vertically */
+  align-items: center; /* Center containers */
+  gap: 20px; /* Adds spacing between the containers */
+  width: 100%;
+}
+
+
+.containerWork {
+  width: 90%; /* Ensure full width */
+  height: 45vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.rowWork {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 80%;
+}
+
+
+/* Main Content */
+ .main-content{
+    margin-left: 14%;
+    margin-top: 50px;
+    padding: 20px;
+    background-color: #f0f0f0; /* Light grey */
+    min-height: 100vh;
+    display: flex;
+    justify-content: space-between;
+}
+
+
+
+#overview-content {
+    display: none;  /* Hide overview content by default */
+}
+
+
+
+.column {
+    width: 60%; /* Column width for map */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#map {
+    width: 100%;
+    height: 90%;
+    border-radius: 20px; /* Curved edges */
+    overflow: hidden; /* Ensures the map doesn't overflow the rounded corners */
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2); /* Elevation effect */
+    background-color: lightgray; /* Placeholder background */
+}
+
+#map2 {
+    width: 100%;
+    height: 90%;
+    border-radius: 20px; /* Curved edges */
+    overflow: hidden; /* Ensures the map doesn't overflow the rounded corners */
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2); /* Elevation effect */
+    background-color: lightgray; /* Placeholder background */
+}
+
+
+
+
+/* Right Column */
+.right-column {
+    width: 35%; /* Column width for input containers */
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Spacing between search bar and scrollable container */
+}
+
+/* Search Container */
+.search-container {
+    display: flex;
+    gap: 10px; /* Spacing between search bar and Add button */
+    align-items: center;
+}
+
+.search-bar {
+    width: 97%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 16px;
+}
+
+.search-bar:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.add-button {
+    width: 30%;
+    padding: 10px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.add-button:hover {
+    background-color: #2980b9;
+}
+
+/* Scrollable Container */
+.scrollable-container {
+    height: 80vh; /* Adjust height as needed */
+    overflow-y: auto; /* Enable vertical scrolling */
+    padding-right: 10px; /* Add padding to avoid overlap with scrollbar */
+}
+
+.input-container {
+    width: 100%;
+    background-color: white;
+    padding: 20px;
+    margin-bottom: 25px;
+    border-radius: 20px;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2); /* Elevation effect */
+    padding-bottom: 20px; /* Ensure bottom padding */
+    height: auto; /* Dynamic height based on content */
+}
+.input-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px; /* Spacing between inputs */
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 14px;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.label-text {
+    font-size: 15px;
+    font-weight: bold;
+    color: #333; /* Dark gray */
+    margin-bottom: 10px;
+}
+
+
+
+.content {
+    display: none; /* Hide all content by default */
+}
+
+.content.active {
+    display: flex; /* Show active content */
+}
+
+
+.customMarkerClass {
+    height: 30px;
+    width: 60px;
+    background-image: url("/track/static/car.svg"); /* Correct syntax */
+    background-size: contain; /* Ensures the image fits within the div */
+    background-repeat: no-repeat; /* Prevents image repetition */
+    background-position: center; /* Centers the image */
+}
+
+
+.marker-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.marker-text {
+    margin-top: 5px; /* Adds spacing between marker and text */
+    font-size: 14px;
+    font-weight: bold;
+    color: black;
+    background-color: white;
+    padding: 2px 6px;
+    border-radius: 5px;
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
+}
+
+
+.logout-button {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #3498db;
+    color: black;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    gap: 8px;
+    transition: background-color 0.3s;
+}
+
+.logout-button:hover {
+    background-color: #3498db;
+}
+
+.logout-icon {
+    width: 15px;
+    height: 15px;
+}
+
+
+.container {
+    margin-bottom : 20px;
+    display: flex;
+    justify-content: flex-start; /* Aligns content to the start (left) */
+}
+
+
+.input-wrapper {
+    width: 100%;
+    display: flex;
+    gap: 40px; /* Ensures 10px gap between elements */
+    justify-content: center; /* Centers the elements */
+}
+
+
+#selectedValues {
+    width: 91%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+
+#dropdownBtn:hover {
+    background-color: #0056b3;
+}
+
+.dropdown-container {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centers everything horizontally */
+    gap: 10px; /* Adds space between elements */
+}
+
+#selectedValues {
+    width: 250px;
+    padding: 10px;
+    text-align: center; /* Centers text inside input */
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+}
+
+#dropdownBtn {
+    width: 250px;
+    padding: 10px;
+    background: #3498db;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    width: 250px;
+    background: white;
+    border-radius: 8px;
+    z-index : 9999;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    text-align: left; /* Aligns checkbox labels properly */
+}
+
+.dropdown-content label {
+    display: block;
+    padding: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background 0.2s ease-in-out;
+}
+
+.dropdown-content label:hover {
+    background: #f0f0f0;
+}
+
+/* Hide Checkbox Borders */
+.dropdown-content input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+/* Show dropdown when active */
+.dropdown-container.active .dropdown-content {
+    display: block;
+}
+
+
+.contactuscontainer {
+    background-color: white;
+    padding: 20px;
+    border-radius: 12px; /* Curved edges */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    width: 90%; /* Adjust width based on content */
+    text-align: left; /* Aligns content to the start */
+    margin: 20px; /* Adds spacing */
+    display: flex;
+    height : 80%;
+    flex-direction: column;
+}
+
+
+
+
+
+.date-containerAnalysis {
+    display: flex;
+    flex-direction: column; /* Each date-time pair in a separate row */
+    gap: 15px; /* Space between rows */
+    width: 100%; /* Full width */
+}
+
+.date-time-rowAnalysis {
+    display: flex;
+    flex-direction: row;
+    gap: 10%; /* Space between elements */
+    width: 100%;
+    align-items: center;
+}
+
+.date-containerAnalysis label {
+    font-size: 14px;
+    font-weight: bold;
+    width: 20%; /* Consistent label width */
+    text-align: center;
+}
+
+.date-containerAnalysis input[type="date"],
+.date-containerAnalysis input[type="time"] {
+    width: 110%; /* Width for date and time pickers */
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    text-align: center;
+}
+
+
