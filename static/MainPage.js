@@ -113,9 +113,10 @@ document.addEventListener("DOMContentLoaded", function () {
         Object.keys(data).forEach(deviceId => {
             // Get the vehicle number from the parsed description object
             const vehicleNumber = description[deviceId] || "Unknown";
-            const { ts , latlng, boxtemp, soc, ttd_ttc, setpoint, drstate, errorstate, warningstate , ang} = data[deviceId];
+            const { ts , latlng, boxtemp, soc, ttd_ttc, setpoint, drstate, errorstate, warningstate , ang , chstatus} = data[deviceId];
 
             const [lat, lng] = latlng.split(",").map(Number);
+            console.log(`${chstatus}`);
 
             // Create text container for the vehicle
             const textContainer = document.createElement("div");
@@ -158,10 +159,21 @@ document.addEventListener("DOMContentLoaded", function () {
                 { label: "Temperature", value: `${boxtemp} °C` },
                 { label: "Battery", value: `${soc} %` },
                 { label: "Time to Discharge", value: `${ttd_ttc} hrs` },
+                {
+                    label: "Charging Status",
+                    value: chstatus === "0"
+                        ? "Not charging"
+                        : chstatus === "1"
+                        ? "Charging"
+                        : chstatus === "2"
+                        ? "Discharging"
+                        : "Unknown Status"
+                },
                 { label: "Set Point", value: `${setpoint} °C` },
                 { label: "Cooling", value: drstate === "0" ? "Inactive" : "Active" },
                 { label: "Error/Warning", value: `Error: ${errorstate}, Warning: ${warningstate}` }
             ];
+
 
             // Create text fields dynamically
             fields.forEach(field => {
@@ -437,12 +449,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     function addMarkersToMap(data) {
-        myMap2 = olaMaps.init({
+    myMap2 = olaMaps.init({
         style: "https://api.olamaps.io/tiles/vector/v1/styles/default-light-standard/style.json",
         container: 'map2',
         center: [80.169088, 13.090862], // Default center
         zoom: 11,
     });
+
     const convertToIST = (utcTimestamp) => {
         const date = new Date(utcTimestamp); // Convert to Date object
         date.setMinutes(date.getMinutes() + 330); // Add 5 hours 30 minutes (330 minutes)
@@ -458,8 +471,18 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     };
 
-        data.forEach(item => {
+    const coordinates = []; // Array to store coordinates for the polyline
+
+    data.forEach(item => {
+        if (item.drstate === 1){
+            console.log("Hello i am here at 1");
             const [lat, lng] = item.latlng.split(",").map(coord => parseFloat(coord.trim()));
+            coordinates.push([lng, lat]); // Push coordinates in [lng, lat] format for polyline
+
+            // Create a custom marker element
+            const customMarker = document.createElement('div');
+            customMarker.className = 'customMarkerCircleClass'; // Apply your custom CSS class
+
             // Create a popup with the ts, and drstate
             const popupContent = `
                 <strong>Timestamp (IST):</strong> ${convertToIST(item.ts)}<br>
@@ -468,16 +491,68 @@ document.addEventListener("DOMContentLoaded", () => {
                 <strong>Cooling Status:</strong> ${item.drstate}
             `;
 
-            // Create marker and attach popup
             const popup = olaMaps.addPopup({ offset: [0, -30], anchor: 'bottom' })
                 .setHTML(popupContent);
+
             olaMaps
-                .addMarker({ offset: [0, -20], anchor: "bottom" }) // Adjust offset for better visibility
-                .setLngLat([lng, lat]) // Use longitude, latitude format
-                .setPopup(popup) // Add popup with data
+                .addMarker({ element: customMarker }) // Use the custom marker element
+                .setLngLat([lng, lat])
+                .setPopup(popup)
                 .addTo(myMap2);
+        }
+        else{
+            const [lat, lng] = item.latlng.split(",").map(coord => parseFloat(coord.trim()));
+            coordinates.push([lng, lat]); // Push coordinates in [lng, lat] format for polyline
+
+            // Create a popup with the ts, and drstate
+            const popupContent =`
+                <strong>Timestamp (IST):</strong> ${convertToIST(item.ts)}<br>
+                <strong>Box Temp:</strong> ${item.boxtemp}°C<br>
+                <strong>Battery Level:</strong> ${item.soc}%<br>
+                <strong>Cooling Status:</strong> ${item.drstate}
+            `;
+
+            const popup = olaMaps.addPopup({ offset: [0, -30], anchor: 'bottom' })
+                .setHTML(popupContent);
+
+            olaMaps
+                .addMarker({ offset: [0, -20], anchor: "bottom" })
+                .setLngLat([lng, lat])
+                .setPopup(popup)
+                .addTo(myMap2);
+        }
+    });
+
+
+    // Add polyline to connect points
+    myMap2.on('load', () => {
+        myMap2.addSource('route', {
+            type: 'geojson',
+            data: {
+                type: 'Feature',
+                properties: {},
+                geometry: {
+                    type: 'LineString',
+                    coordinates: coordinates, // Use collected coordinates
+                },
+            },
         });
-    }
+
+        myMap2.addLayer({
+            id: 'route',
+            type: 'line',
+            source: 'route',
+            layout: {
+                'line-join': 'round',
+                'line-cap': 'round'
+            },
+            paint: {
+                'line-color': '#007BFF', // Blue color for the line
+                'line-width': 3
+            },
+        });
+    });
+}
 });
 
 const dropdownContainer = document.querySelector('.dropdown-container');
@@ -596,93 +671,139 @@ document.getElementById("submitBtnAnalysis").addEventListener("click", async fun
     }
 });
 // Function to plot ApexChart
+let globalData = []; // Define global data variable
+
 function plotApexChart(data) {
-    if (!data.length) {
-        console.error("No data available for chart.");
-        alert("No data available for chart");
-        return;
+  if (!data.length) {
+    console.error("No data available for chart.");
+    alert("No data available for chart");
+    return;
+  }
+
+  globalData = data; // Store data globally for use in downloadCSV
+
+  const timestamps = data.map(item => {
+    const dateParts = item.ts.match(/\d+/g);
+    if (!dateParts || dateParts.length < 6) {
+      console.error("Invalid timestamp format:", item.ts);
+      return null;
     }
+    const [day, month, year, hour, minute, second] = dateParts.map(Number);
+    const utcTimestamp = Date.UTC(year, month - 1, day, hour, minute, second);
+    return utcTimestamp;
+  }).filter(ts => ts !== null);
 
-    const series = [];
+  const validData = data.filter((item, index) => !isNaN(timestamps[index]));
 
-    // Convert "ts" to Unix timestamps (milliseconds) and adjust for IST (GMT+5:30)
-    const timestamps = data.map(item => {
-        const [day, month, year, hour, minute, second] = item.ts.match(/\d+/g).map(Number);
-        let utcTimestamp = new Date(year, month - 1, day, hour, minute, second).getTime();
-        let istTimestamp = utcTimestamp + (5.5 * 60 * 60 * 1000); // Convert to IST
-        return istTimestamp;
-    });
+  const keys = Object.keys(validData[0]).filter(key => key !== "ts");
+  const series = keys.map(key => ({
+    name: key,
+    data: validData.map((item, index) => [timestamps[index], item[key]])
+  }));
 
-    // Extract keys dynamically, excluding "ts"
-    const keys = Object.keys(data[0]).filter(key => key !== "ts");
-    keys.forEach((key) => {
-        series.push({
-            name: key,
-            data: data.map((item, index) => [timestamps[index], item[key]]) // Use IST timestamps
-        });
-    });
-
-    const options = {
-        chart: {
-            type: "line",
-            height: 350,
-            zoom: {
-                enabled: true
-            },
-            toolbar: {
-                export: {
-                    csv: {
-                        headerCategory: "Date;Time",
-                        columnDelimiter: ";",
-                        dateFormatter: function (timestamp) {
-                            if (!timestamp || isNaN(new Date(timestamp).getTime())) {
-                                return ""; // Handle invalid timestamps
-                            }
-
-                            const date = new Date(timestamp);
-                            return date.toLocaleString("en-GB", {
-                                timeZone: "Asia/Kolkata",
-                                day: "2-digit",
-                                month: "2-digit",
-                                year: "numeric",
-                                hour: "2-digit",
-                                minute: "2-digit",
-                                second: "2-digit",
-                                hourCycle: "h23" // 24-hour format
-                            }).replace(",", ""); // Clean format
-                        }
-                    }
-                }
-            }
+  const options = {
+    chart: {
+      type: "line",
+      height: 350,
+      zoom: { enabled: true },
+      toolbar: {
+        tools: {
+          download: false
         },
-        series: series,
-        xaxis: {
-            labels: {
-                datetimeUTC: false, // Ensure it uses local timezone (IST)
-                formatter: (value) => {
-                    let date = new Date(value);
-                    return date.toLocaleString("en-GB", {
-                        timeZone: "Asia/Kolkata",
-                        day: "2-digit",
-                        month: "2-digit",
-                        year: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        second: "2-digit",
-                        hourCycle: "h23"
-                    }).replace(",", "");
-                }
-            },
-        },
-        tooltip: {
-            x: {
-                format: "dd/MM/yyyy HH:mm:ss" // Format tooltip timestamps in IST
-            }
+        customIcons: [{
+          icon: '<svg>...</svg>',
+          title: 'Download CSV',
+          class: 'custom-download',
+          click: function () {
+            downloadCSV(globalData);
+          }
+        }]
+      }
+    },
+    series: series,
+    xaxis: {
+      type: "datetime",
+      labels: {
+        datetimeUTC: false,
+        formatter: (value) => {
+          const istValue = value + (5.5 * 60 * 60 * 1000);
+          const date = new Date(istValue);
+          const day = String(date.getUTCDate()).padStart(2, '0');
+          const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+          const year = date.getUTCFullYear();
+          const hours = String(date.getUTCHours()).padStart(2, '0');
+          const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+          const seconds = String(date.getUTCSeconds()).padStart(2, '0');
+          return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
         }
-    };
+      },
+      tickAmount: 5
+    },
+    tooltip: {
+      x: {
+        formatter: (value) => {
+          const istValue = value + (5.5 * 60 * 60 * 1000);
+          const date = new Date(istValue);
+          const day = String(date.getUTCDate()).padStart(2, '0');
+          const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+          const year = date.getUTCFullYear();
+          const hours = String(date.getUTCHours()).padStart(2, '0');
+          const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+          const seconds = String(date.getUTCSeconds()).padStart(2, '0');
+          return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+        }
+      }
+    }
+  };
 
-    // Render chart
-    document.getElementById("chart").innerHTML = ""; // Clear previous chart
-    const chart = new ApexCharts(document.getElementById("chart"), options);
-    chart.render();
+  document.getElementById("chart").innerHTML = "";
+  const chart = new ApexCharts(document.getElementById("chart"), options);
+  chart.render();
 }
+
+function downloadCSV(data) {
+  const timestamps = data.map(item => {
+    const dateParts = item.ts.match(/\d+/g);
+    if (!dateParts || dateParts.length < 6) {
+      console.error("Invalid timestamp format:", item.ts);
+      return null;
+    }
+    const [day, month, year, hour, minute, second] = dateParts.map(Number);
+    const utcTimestamp = Date.UTC(year, month - 1, day, hour, minute, second);
+    const istTimestamp = utcTimestamp + (5.5 * 60 * 60 * 1000);
+    return istTimestamp;
+  }).filter(ts => ts !== null);
+
+  const keys = Object.keys(data[0]).filter(key => key !== "ts");
+  const headers = ["Date Time", ...keys].join(",");
+
+  const rows = data.map((item, index) => {
+    const istTimestamp = timestamps[index];
+    const date = new Date(istTimestamp);
+    const day = String(date.getUTCDate()).padStart(2, '0');
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+    const year = date.getUTCFullYear();
+    const hours = String(date.getUTCHours()).padStart(2, '0');
+    const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+    const seconds = String(date.getUTCSeconds()).padStart(2, '0');
+    const formattedDate = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+    const values = keys.map(key => item[key]).join(",");
+    return `${formattedDate},${values}`;
+  });
+
+  const csvContent = [headers, ...rows].join("\n");
+
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.setAttribute("href", url);
+  link.setAttribute("download", "chart_data.csv");
+  link.style.visibility = "hidden";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+document.getElementById("downloadButton").addEventListener("click", () => {
+  downloadCSV(globalData);
+});

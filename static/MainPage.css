@@ -306,7 +306,7 @@ body {
 
 /* Scrollable Container */
 .scrollable-container {
-    height: 80vh; /* Adjust height as needed */
+    height: 85vh; /* Adjust height as needed */
     overflow-y: auto; /* Enable vertical scrolling */
     padding-right: 10px; /* Add padding to avoid overlap with scrollbar */
 }
@@ -363,6 +363,16 @@ body {
     height: 30px;
     width: 60px;
     background-image: url("/track/static/car.svg"); /* Correct syntax */
+    background-size: contain; /* Ensures the image fits within the div */
+    background-repeat: no-repeat; /* Prevents image repetition */
+    background-position: center; /* Centers the image */
+}
+
+
+.customMarkerCircleClass {
+    height: 50px;
+    width: 50px;
+    background-image: url("/track/static/circleicon.svg"); /* Correct syntax */
     background-size: contain; /* Ensures the image fits within the div */
     background-repeat: no-repeat; /* Prevents image repetition */
     background-position: center; /* Centers the image */
@@ -560,3 +570,15 @@ body {
 }
 
 
+#downloadButton {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+#downloadButton:hover {
+  background-color: #0056b3;
+}

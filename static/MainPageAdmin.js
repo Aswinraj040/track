@@ -602,69 +602,139 @@ document.getElementById("submitBtnAnalysis").addEventListener("click", async fun
     }
 });
 // Function to plot ApexChart
+let globalData = []; // Define global data variable
+
 function plotApexChart(data) {
-    if (!data.length) {
-        console.error("No data available for chart.");
-        alert("No data available for chart");
-        return;
+  if (!data.length) {
+    console.error("No data available for chart.");
+    alert("No data available for chart");
+    return;
+  }
+
+  globalData = data; // Store data globally for use in downloadCSV
+
+  const timestamps = data.map(item => {
+    const dateParts = item.ts.match(/\d+/g);
+    if (!dateParts || dateParts.length < 6) {
+      console.error("Invalid timestamp format:", item.ts);
+      return null;
     }
+    const [day, month, year, hour, minute, second] = dateParts.map(Number);
+    const utcTimestamp = Date.UTC(year, month - 1, day, hour, minute, second);
+    return utcTimestamp;
+  }).filter(ts => ts !== null);
 
-    const series = [];
+  const validData = data.filter((item, index) => !isNaN(timestamps[index]));
 
-    // Convert "ts" to Unix timestamps (milliseconds) and adjust for IST (GMT+5:30)
-    const timestamps = data.map(item => {
-        const [day, month, year, hour, minute, second] = item.ts.match(/\d+/g).map(Number);
-        let utcTimestamp = new Date(year, month - 1, day, hour, minute, second).getTime();
-        let istTimestamp = utcTimestamp + (5.5 * 60 * 60 * 1000); // Convert to IST
-        return istTimestamp;
-    });
+  const keys = Object.keys(validData[0]).filter(key => key !== "ts");
+  const series = keys.map(key => ({
+    name: key,
+    data: validData.map((item, index) => [timestamps[index], item[key]])
+  }));
 
-    // Extract keys dynamically, excluding "ts"
-    const keys = Object.keys(data[0]).filter(key => key !== "ts");
-    keys.forEach((key) => {
-        series.push({
-            name: key,
-            data: data.map((item, index) => [timestamps[index], item[key]]) // Use IST timestamps
-        });
-    });
-
-    const options = {
-        chart: {
-            type: "line",
-            height: 350,
-            zoom: {
-                enabled: true // Enable zoom for expanding values
-            }
+  const options = {
+    chart: {
+      type: "line",
+      height: 350,
+      zoom: { enabled: true },
+      toolbar: {
+        tools: {
+          download: false
         },
-        series: series,
-        xaxis: {
-            labels: {
-                datetimeUTC: false, // Ensure it uses local timezone (IST)
-                formatter: (value) => {
-                    let date = new Date(value);
-                    return date.toLocaleString("en-GB", {
-                        timeZone: "Asia/Kolkata",
-                        day: "2-digit",
-                        month: "2-digit",
-                        year: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        second: "2-digit",
-                        hourCycle: "h23" // 24-hour format
-                    }).replace(",", ""); // Remove comma for cleaner display
-                }
-            },
-            tickAmount: 5 // Show only 5 labels initially
-        },
-        tooltip: {
-            x: {
-                format: "dd/MM/yyyy HH:mm:ss" // Format tooltip timestamps in IST
-            }
+        customIcons: [{
+          icon: '<svg>...</svg>',
+          title: 'Download CSV',
+          class: 'custom-download',
+          click: function () {
+            downloadCSV(globalData);
+          }
+        }]
+      }
+    },
+    series: series,
+    xaxis: {
+      type: "datetime",
+      labels: {
+        datetimeUTC: false,
+        formatter: (value) => {
+          const istValue = value + (5.5 * 60 * 60 * 1000);
+          const date = new Date(istValue);
+          const day = String(date.getUTCDate()).padStart(2, '0');
+          const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+          const year = date.getUTCFullYear();
+          const hours = String(date.getUTCHours()).padStart(2, '0');
+          const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+          const seconds = String(date.getUTCSeconds()).padStart(2, '0');
+          return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
         }
-    };
+      },
+      tickAmount: 5
+    },
+    tooltip: {
+      x: {
+        formatter: (value) => {
+          const istValue = value + (5.5 * 60 * 60 * 1000);
+          const date = new Date(istValue);
+          const day = String(date.getUTCDate()).padStart(2, '0');
+          const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+          const year = date.getUTCFullYear();
+          const hours = String(date.getUTCHours()).padStart(2, '0');
+          const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+          const seconds = String(date.getUTCSeconds()).padStart(2, '0');
+          return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+        }
+      }
+    }
+  };
 
-    // Render chart
-    document.getElementById("chart").innerHTML = ""; // Clear previous chart
-    const chart = new ApexCharts(document.getElementById("chart"), options);
-    chart.render();
+  document.getElementById("chart").innerHTML = "";
+  const chart = new ApexCharts(document.getElementById("chart"), options);
+  chart.render();
 }
+
+function downloadCSV(data) {
+  const timestamps = data.map(item => {
+    const dateParts = item.ts.match(/\d+/g);
+    if (!dateParts || dateParts.length < 6) {
+      console.error("Invalid timestamp format:", item.ts);
+      return null;
+    }
+    const [day, month, year, hour, minute, second] = dateParts.map(Number);
+    const utcTimestamp = Date.UTC(year, month - 1, day, hour, minute, second);
+    const istTimestamp = utcTimestamp + (5.5 * 60 * 60 * 1000);
+    return istTimestamp;
+  }).filter(ts => ts !== null);
+
+  const keys = Object.keys(data[0]).filter(key => key !== "ts");
+  const headers = ["Date Time", ...keys].join(",");
+
+  const rows = data.map((item, index) => {
+    const istTimestamp = timestamps[index];
+    const date = new Date(istTimestamp);
+    const day = String(date.getUTCDate()).padStart(2, '0');
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+    const year = date.getUTCFullYear();
+    const hours = String(date.getUTCHours()).padStart(2, '0');
+    const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+    const seconds = String(date.getUTCSeconds()).padStart(2, '0');
+    const formattedDate = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+    const values = keys.map(key => item[key]).join(",");
+    return `${formattedDate},${values}`;
+  });
+
+  const csvContent = [headers, ...rows].join("\n");
+
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.setAttribute("href", url);
+  link.setAttribute("download", "chart_data.csv");
+  link.style.visibility = "hidden";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+document.getElementById("downloadButton").addEventListener("click", () => {
+  downloadCSV(globalData);
+});
