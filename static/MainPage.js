@@ -475,7 +475,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     data.forEach(item => {
         if (item.drstate === 1){
-            console.log("Hello i am here at 1");
             const [lat, lng] = item.latlng.split(",").map(coord => parseFloat(coord.trim()));
             coordinates.push([lng, lat]); // Push coordinates in [lng, lat] format for polyline
 

@@ -463,9 +463,16 @@ document.addEventListener("DOMContentLoaded", () => {
             hour12: false // Ensures 24-hour format
         });
     };
-
+        const coordinates = []; // Array to store coordinates for the polyline
         data.forEach(item => {
+        if (item.drstate === 1){
             const [lat, lng] = item.latlng.split(",").map(coord => parseFloat(coord.trim()));
+            coordinates.push([lng, lat]); // Push coordinates in [lng, lat] format for polyline
+
+            // Create a custom marker element
+            const customMarker = document.createElement('div');
+            customMarker.className = 'customMarkerCircleClass'; // Apply your custom CSS class
+
             // Create a popup with the ts, and drstate
             const popupContent = `
                 <strong>Timestamp (IST):</strong> ${convertToIST(item.ts)}<br>
@@ -474,15 +481,37 @@ document.addEventListener("DOMContentLoaded", () => {
                 <strong>Cooling Status:</strong> ${item.drstate}
             `;
 
-            // Create marker and attach popup
             const popup = olaMaps.addPopup({ offset: [0, -30], anchor: 'bottom' })
                 .setHTML(popupContent);
+
             olaMaps
-                .addMarker({ offset: [0, -20], anchor: "bottom" }) // Adjust offset for better visibility
-                .setLngLat([lng, lat]) // Use longitude, latitude format
-                .setPopup(popup) // Add popup with data
+                .addMarker({ element: customMarker }) // Use the custom marker element
+                .setLngLat([lng, lat])
+                .setPopup(popup)
                 .addTo(myMap2);
-        });
+        }
+        else{
+            const [lat, lng] = item.latlng.split(",").map(coord => parseFloat(coord.trim()));
+            coordinates.push([lng, lat]); // Push coordinates in [lng, lat] format for polyline
+
+            // Create a popup with the ts, and drstate
+            const popupContent =`
+                <strong>Timestamp (IST):</strong> ${convertToIST(item.ts)}<br>
+                <strong>Box Temp:</strong> ${item.boxtemp}°C<br>
+                <strong>Battery Level:</strong> ${item.soc}%<br>
+                <strong>Cooling Status:</strong> ${item.drstate}
+            `;
+
+            const popup = olaMaps.addPopup({ offset: [0, -30], anchor: 'bottom' })
+                .setHTML(popupContent);
+
+            olaMaps
+                .addMarker({ offset: [0, -20], anchor: "bottom" })
+                .setLngLat([lng, lat])
+                .setPopup(popup)
+                .addTo(myMap2);
+        }
+    });
     }
 });
 
