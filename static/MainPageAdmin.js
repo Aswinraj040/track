@@ -129,7 +129,7 @@ document.addEventListener("DOMContentLoaded", function () {
         Object.keys(data).forEach(deviceId => {
             // Get the vehicle number from the parsed description object
             const vehicleNumber = description[deviceId] || "Unknown";
-            const { ts , latlng, boxtemp, soc, ttd_ttc, setpoint, drstate, errorstate, warningstate , ang} = data[deviceId];
+            const { ts , latlng, boxtemp, soc, ttd_ttc, setpoint, drstate, errorstate, warningstate , ang , chstatus} = data[deviceId];
 
             const [lat, lng] = latlng.split(",").map(Number);
 
@@ -174,6 +174,16 @@ document.addEventListener("DOMContentLoaded", function () {
                 { label: "Temperature", value: `${boxtemp} °C` },
                 { label: "Battery", value: `${soc} %` },
                 { label: "Time to Discharge", value: `${ttd_ttc} hrs` },
+                {
+                    label: "Charging Status",
+                    value: chstatus === "0"
+                        ? "Not charging"
+                        : chstatus === "1"
+                        ? "Charging"
+                        : chstatus === "2"
+                        ? "Discharging"
+                        : "Unknown Status"
+                },
                 { label: "Set Point", value: `${setpoint} °C` },
                 { label: "Cooling", value: drstate === "0" ? "Inactive" : "Active" },
                 { label: "Error/Warning", value: `Error: ${errorstate}, Warning: ${warningstate}` }
@@ -511,6 +521,33 @@ document.addEventListener("DOMContentLoaded", () => {
                 .setPopup(popup)
                 .addTo(myMap2);
         }
+    });
+    myMap2.on('load', () => {
+        myMap2.addSource('route', {
+            type: 'geojson',
+            data: {
+                type: 'Feature',
+                properties: {},
+                geometry: {
+                    type: 'LineString',
+                    coordinates: coordinates, // Use collected coordinates
+                },
+            },
+        });
+
+        myMap2.addLayer({
+            id: 'route',
+            type: 'line',
+            source: 'route',
+            layout: {
+                'line-join': 'round',
+                'line-cap': 'round'
+            },
+            paint: {
+                'line-color': '#007BFF', // Blue color for the line
+                'line-width': 3
+            },
+        });
     });
     }
 });
