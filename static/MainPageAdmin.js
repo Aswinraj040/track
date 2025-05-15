@@ -552,6 +552,206 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    const submitBtn = document.getElementById("submitBtn");
+    const dropdown = document.getElementById("dropdown");
+    const startDateInput = document.getElementById("start-date");
+    const endDateInput = document.getElementById("end-date");
+
+    submitBtn.addEventListener("click", async () => {
+        // Get the selected dropdown value
+        const selectedValue = dropdown.value;
+        console.log("Selected Dropdown Value:", selectedValue);
+
+        // Fetch and parse localStorage value for "description"
+        const storedData = sessionStorage.getItem("description");
+
+        if (!storedData) {
+            console.error("No data found in localStorage for key: description");
+            alert("No data found in localStorage for key: description");
+            return;
+        }
+
+        let parsedData;
+        try {
+            parsedData = JSON.parse(storedData);
+            if (typeof parsedData === "string") {
+                parsedData = JSON.parse(parsedData); // Handle double stringification
+            }
+        } catch (error) {
+            console.error("Error parsing JSON from localStorage:", error);
+            alert("Error parsing JSON from localStorage");
+            return;
+        }
+
+        console.log("Properly Parsed JSON:", parsedData);
+
+        // Find the key for the selected dropdown value
+        const keyForValue = Object.keys(parsedData).find(
+            key => parsedData[key] === selectedValue
+        );
+
+        if (!keyForValue) {
+            console.error("No matching key found for selected value:", selectedValue);
+            alert("No matching key found for selected value");
+            return;
+        }
+
+        console.log("Key for Selected Value:", keyForValue);
+
+        // Get Start Date and End Date values
+
+        const startTimestamp = getCombinedTimestamp("start-date", "start-time");
+        const endTimestamp = getCombinedTimestamp("end-date", "end-time");
+
+        if (!startTimestamp || !endTimestamp) {
+            console.error("Start Date or End Date is missing.");
+            alert("Start Date or End Date is missing");
+            return;
+        }
+
+
+        console.log("Start Timestamp:", startTimestamp);
+        console.log("End Timestamp:", endTimestamp);
+
+        // Prepare request payload
+        const requestBody = {
+            action: "overview",
+            id: keyForValue,
+            startdate: startTimestamp,
+            enddate: endTimestamp
+        };
+
+        try {
+            // Send POST request
+            const response = await fetch("https://96wvqt69vk.execute-api.us-east-1.amazonaws.com/testingStage/YoTuhBackend", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(requestBody)
+            });
+
+            // Parse and log response
+            const responseData = await response.json();
+            console.log("Response from server:", responseData);
+
+            // Check if response contains data
+            if (responseData.success && responseData.data) {
+                addMarkersToMap(responseData.data);
+            } else {
+                console.error("No valid data received from server.");
+                alert("No valid data received from server");
+            }
+        } catch (error) {
+            console.error("Error sending POST request:", error);
+            alert("Error sending POST request");
+        }
+    });
+
+    function addMarkersToMap(data) {
+        myMap2 = olaMaps.init({
+        style: "https://api.olamaps.io/tiles/vector/v1/styles/default-light-standard/style.json",
+        container: 'map2',
+        center: [80.169088, 13.090862], // Default center
+        zoom: 11,
+    });
+    const convertToIST = (utcTimestamp) => {
+        const date = new Date(utcTimestamp); // Convert to Date object
+        date.setMinutes(date.getMinutes() + 330); // Add 5 hours 30 minutes (330 minutes)
+
+        return date.toLocaleString("en-GB", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: false // Ensures 24-hour format
+        });
+    };
+        const coordinates = []; // Array to store coordinates for the polyline
+        data.forEach(item => {
+        if (item.drstate === 1){
+            const [lat, lng] = item.latlng.split(",").map(coord => parseFloat(coord.trim()));
+            coordinates.push([lng, lat]); // Push coordinates in [lng, lat] format for polyline
+
+            // Create a custom marker element
+            const customMarker = document.createElement('div');
+            customMarker.className = 'customMarkerCircleClass'; // Apply your custom CSS class
+
+            // Create a popup with the ts, and drstate
+            const popupContent = `
+                <strong>Timestamp (IST):</strong> ${convertToIST(item.ts)}<br>
+                <strong>Box Temp:</strong> ${item.boxtemp}°C<br>
+                <strong>Battery Level:</strong> ${item.soc}%<br>
+                <strong>Cooling Status:</strong> ${item.drstate}
+            `;
+
+            const popup = olaMaps.addPopup({ offset: [0, -30], anchor: 'bottom' })
+                .setHTML(popupContent);
+
+            olaMaps
+                .addMarker({ element: customMarker }) // Use the custom marker element
+                .setLngLat([lng, lat])
+                .setPopup(popup)
+                .addTo(myMap2);
+        }
+        else{
+            const [lat, lng] = item.latlng.split(",").map(coord => parseFloat(coord.trim()));
+            coordinates.push([lng, lat]); // Push coordinates in [lng, lat] format for polyline
+
+            // Create a popup with the ts, and drstate
+            const popupContent =`
+                <strong>Timestamp (IST):</strong> ${convertToIST(item.ts)}<br>
+                <strong>Box Temp:</strong> ${item.boxtemp}°C<br>
+                <strong>Battery Level:</strong> ${item.soc}%<br>
+                <strong>Cooling Status:</strong> ${item.drstate}
+            `;
+
+            const popup = olaMaps.addPopup({ offset: [0, -30], anchor: 'bottom' })
+                .setHTML(popupContent);
+
+            olaMaps
+                .addMarker({ offset: [0, -20], anchor: "bottom" })
+                .setLngLat([lng, lat])
+                .setPopup(popup)
+                .addTo(myMap2);
+        }
+    });
+    myMap2.on('load', () => {
+        myMap2.addSource('route', {
+            type: 'geojson',
+            data: {
+                type: 'Feature',
+                properties: {},
+                geometry: {
+                    type: 'LineString',
+                    coordinates: coordinates, // Use collected coordinates
+                },
+            },
+        });
+
+        myMap2.addLayer({
+            id: 'route',
+            type: 'line',
+            source: 'route',
+            layout: {
+                'line-join': 'round',
+                'line-cap': 'round'
+            },
+            paint: {
+                'line-color': '#007BFF', // Blue color for the line
+                'line-width': 3
+            },
+        });
+    });
+    }
+});
+
+
 const dropdownContainer = document.querySelector('.dropdown-container');
 const dropdownBtn = document.getElementById('dropdownBtn');
 const dropdownContent = document.getElementById('dropdownContent');
@@ -667,6 +867,134 @@ document.getElementById("submitBtnAnalysis").addEventListener("click", async fun
         alert("Request failed:", error);
     }
 });
+
+
+
+
+
+document.getElementById("downloadCanFrame8").addEventListener("click", async function() {
+
+
+    const formattedStartDate = getCombinedTimestamp("start-dateAnalysis", "start-timeAnalysis");
+    const formattedEndDate = getCombinedTimestamp("end-dateAnalysis", "end-timeAnalysis");
+
+
+    const dropdownValue = document.getElementById("dropdownAnalysis").value;
+
+
+    // Fetch and parse localStorage value for "description"
+    const storedData = sessionStorage.getItem("description");
+
+    if (!storedData) {
+        console.error("No data found in localStorage for key: description");
+        alert("No data found in localStorage for key: description");
+        return;
+    }
+
+    let parsedData;
+    try {
+        parsedData = JSON.parse(storedData);
+        if (typeof parsedData === "string") {
+            parsedData = JSON.parse(parsedData); // Handle double stringification
+        }
+    } catch (error) {
+        console.error("Error parsing JSON from localStorage:", error);
+        alert("Error parsing JSON from localStorage");
+        return;
+    }
+
+    console.log("Properly Parsed JSON:", parsedData);
+
+    // Find the key for the selected dropdown value
+    const keyForValue = Object.keys(parsedData).find(
+        key => parsedData[key] === dropdownValue
+    );
+
+    if (!keyForValue) {
+        console.error("No matching key found for selected value:", selectedValue);
+        alert("No matching key found for selected value");
+        return;
+    }
+
+    console.log("Key for Selected Value:", keyForValue);
+
+
+    console.log(`${formattedStartDate}`);
+
+    // API Request Body
+    const requestBody = {
+        action: "fetchCanFrameData",
+        id: keyForValue,
+        startDate: formattedStartDate,
+        endDate: formattedEndDate,
+    };
+
+    try {
+        // Send API request
+        const response = await fetch("https://96wvqt69vk.execute-api.us-east-1.amazonaws.com/testingStage/YoTuhBackend", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        const responseData = await response.json();
+
+        if (responseData.success) {
+            const csvData = responseData.data;
+
+            if (csvData.length === 0) {
+                alert("No data available to download.");
+                return;
+            }
+
+            const csvRows = [];
+            const headers = Object.keys(csvData[0]);
+            csvRows.push(headers.join(','));
+
+            csvData.forEach(row => {
+                const values = headers.map(header => {
+                    if (header === "ts") {
+                        const date = new Date(parseInt(row[header]));
+                        const day = String(date.getDate()).padStart(2, '0');
+                        const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+                        const year = date.getFullYear();
+                        const hours = String(date.getHours()).padStart(2, '0');
+                        const minutes = String(date.getMinutes()).padStart(2, '0');
+                        const seconds = String(date.getSeconds()).padStart(2, '0');
+                        return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+                    } else {
+                        return row[header];
+                    }
+                });
+                csvRows.push(values.join(','));
+            });
+
+            const csvString = csvRows.join('\n');
+            const blob = new Blob([csvString], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'CanFrame8_Data.csv';
+            a.click();
+
+            URL.revokeObjectURL(url);
+        }
+         else {
+            console.error("API Error:", responseData.message);
+            alert("API Error:", responseData.message);
+        }
+    } catch (error) {
+        console.error("Request failed:", error);
+        alert("Request failed:", error);
+    }
+});
+
+
+
+
 // Function to plot ApexChart
 let globalData = []; // Define global data variable
 

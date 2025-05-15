@@ -202,6 +202,7 @@
                                 <label><input type="checkbox" value="GNSS HDOP"> GNSS HDOP</label>
                                 <label><input type="checkbox" value="Vehicle Speed"> Vehicle Speed</label>
                                 <label><input type="checkbox" value="Battery Current"> Battery Current</label>
+                                <label><input type="checkbox" value="Dallas Temp 1"> Dallas Temp 1</label>
                                 <label><input type="checkbox" value="Temp sensor 1"> Temp sensor 1</label>
                                 <label><input type="checkbox" value="Temp sensor 2"> Temp sensor 2</label>
                                 <label><input type="checkbox" value="Temp sensor 3"> Temp sensor 3</label>
@@ -247,12 +248,18 @@
           </div>
 
           <div class="containerWork">
-            <div class="chart-container">
-                <h2 style="text-align: center;">Data Analysis</h2>
-                <button id="downloadButton">Download CSV</button>
-                <div id="chart"></div>
+          <div class="chart-container">
+            <h2 style="text-align: center; margin-bottom : 10px;">Data Analysis</h2>
+
+            <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 20px;">
+                <button id="downloadButton" class="download-btn">Download CSV</button>
+                <button id="downloadCanFrame8" class="download-btn">Download Can Frame 8</button>
             </div>
+
+            <div id="chart"></div>
           </div>
+        </div>
+
     </div>
     <div class="main-content" id="contactus-content">
         <!-- Left Column: Map -->

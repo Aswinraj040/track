@@ -9,6 +9,18 @@ body {
     height: 100vh;
 }
 
+
+.table-container {
+    max-height: 400px; /* Adjust as needed */
+    overflow-y: auto;
+    margin-top: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background: white;
+}
+
+
+
 .container {
     background: white;
     padding: 20px;
